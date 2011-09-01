@@ -1,6 +1,12 @@
 module ElasticHelpers
   class StringHelpers
-    LUCENE_SPECIAL_CHARACTERS_REGEX = "[\\\\!=+-\\\\(){}[\\]^\"~*?:]"
+    LUCENE_SPECIAL_CHARACTERS_REGEX = "[\\\\!\\-=+(){}[\\]\"^~*?:]"
+    
+    def self.configure(opts)
+      opts = {
+        :allow_quoted_strings => false
+      }.update(opts)
+    end
     
     def self.escape_for_lucene_search(search_string)
       search_string.gsub(/(#{LUCENE_SPECIAL_CHARACTERS_REGEX})/, '\\\\\1')
