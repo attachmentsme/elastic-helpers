@@ -1,6 +1,6 @@
 = elastic-helpers
 
-Description goes here.
+Helper utilities for ElasticSearch and Lucene in Attachments.me.
 
 == Contributing to elastic-helpers
  
@@ -16,4 +16,3 @@ Description goes here.
 
 Copyright (c) 2011 bcoe. See LICENSE.txt for
 further details.
-
