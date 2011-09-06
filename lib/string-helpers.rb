@@ -2,21 +2,22 @@ module ElasticHelpers
   class StringHelpers
     
     @@allow_quoted_strings = false
-    
-    LUCENE_SPECIAL_CHARACTERS_REGEX = "[\\\\!\\-=+(){}\\[\\]\"^~*?:]"
+    @@allow_wildcards = false
     
     def self.configure(opts)
       opts = {
-        :allow_quoted_strings => false
+        :allow_quoted_strings => false,
+        :allow_wildcards => false
       }.update(opts)
       
       @@allow_quoted_strings = opts[:allow_quoted_strings]
+      @@allow_wildcards = opts[:allow_wildcards]
     end
     
     def self.escape_for_lucene_search(search_string)
       escaped_search_string = search_string
       escaped_search_string = escaped_search_string.slice(1..escaped_search_string.length() - 2) if string_has_surrounding_quotes?(search_string)
-      escaped_search_string.gsub!(/(#{LUCENE_SPECIAL_CHARACTERS_REGEX})/, '\\\\\1')
+      escaped_search_string.gsub!(/(#{build_lucene_special_characters_regex})/, '\\\\\1')
       escaped_search_string = "\"#{escaped_search_string}\"" if string_has_surrounding_quotes?(search_string)
       escaped_search_string
     end
@@ -28,6 +29,12 @@ module ElasticHelpers
         return true
       end
       return false
+    end
+    
+    def self.build_lucene_special_characters_regex
+      lucene_special_characters_regex = "[\\\\!\\-=+(){}\\[\\]\"^~?:"
+      lucene_special_characters_regex = "#{lucene_special_characters_regex}*" unless @@allow_wildcards
+      "#{lucene_special_characters_regex}]"
     end
   end
 end
