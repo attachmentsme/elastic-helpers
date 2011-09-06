@@ -8,7 +8,12 @@ class TestStringHelpers < Test::Unit::TestCase
   
   should "not escape surrounding quotes if quotes are whitelisted in configuration" do
     ElasticHelpers::StringHelpers.configure({})
-    puts('"Foobar"'.escape_for_lucene_search)
     assert_equal '\"Foobar\"', '"Foobar"'.escape_for_lucene_search
+    ElasticHelpers::StringHelpers.configure({
+      :allow_quoted_strings => true
+    })
+    assert_equal '"Foobar\\!"', '"Foobar!"'.escape_for_lucene_search
+    assert_equal 'Foobar\\!\\"', 'Foobar!"'.escape_for_lucene_search
+    assert_equal '\\"Foobar\\!', '"Foobar!'.escape_for_lucene_search
   end
 end
